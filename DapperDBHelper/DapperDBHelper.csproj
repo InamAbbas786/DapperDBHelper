@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Description>Use full for web API’s 
+               Excludes the installation of extra packages just installs DapperDBHelper and create object of DapperDBHelper and pass your connection string through contractor DBHelper class.
+               How we can use DapperDBHelper, Find the piece of code below Example              
+               public class  SetupsController
+               {      
+               private readonly DBHelpers _dBHelpers;
+                       public SetupsController()
+                       {
+                           _dBHelpers = new DBHelpers(ConectionString.connectionString);
+                       }
+               Public async void getSingleList()
+               {
+                var Result = await _dBHelpers.QueryAsyncList&lt;YourViewModelClass&gt;("Select * from table");
+               }
+                 public void getSingleRecord()
+               {
+                var Result = _dBHelpers.Query&lt;YourViewModelClass&gt;("Select Top 1* from table");
+               }
+
+               public void getMultipleTable()
+               {
+               Make list same as it is like table  returns from  your store procedure
+                 List&lt;string&gt; tableName = new List&lt;string&gt;();
+                               tableName.Add("Table1");
+                               tableName.Add("Table2");
+                               tableName.Add("Table3");
+                      
+                               var Result = await  _dBHelpers.QueryMultipleAsync("EXEC Store_Procedure @ID", param: new { ID = ID }, tableName);
+               }
+               Execute Method is used for CRUD Operations
+               After Execution of your store procedure returning single row of current execution is best practice
+               ExecuteAsync call depends upon your application nature
+               public void InserData(Employees model)
+               {
+                   var Result = await  _dBHelpers.Execute("EXEC Store_Procedure @FirstName,@LastName,@Address", param: new { FirstName = model.FirstName, LastName =model.LastName, Address = model.Address});
+               }
+</Description>
+    <Copyright>Create By Inam Abbas</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryType></RepositoryType>
+    <Version>1.3.0</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <PackageTags>DapperDbHelper, DBHelper,Generic,DapperGenerics, Dapper DB Pacakage, Dapper API, API Helper Dapper</PackageTags>
+    <FileVersion>1.2.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.78" />
+    <PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="8.5.2" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="5.0.9" />
+    <PackageReference Include="MySql.Data" Version="8.0.26" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Npgsql" Version="5.0.7" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="System.Data.Common" Version="4.3.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+  </ItemGroup>
+
+</Project>
