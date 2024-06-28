@@ -2,54 +2,67 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Description>Use full for web API’s 
-               Excludes the installation of extra packages just installs DapperDBHelper and create object of DapperDBHelper and pass your connection string through contractor DBHelper class.
-               How we can use DapperDBHelper, Find the piece of code below Example              
-               public class  SetupsController
-               {      
-               private readonly DBHelpers _dBHelpers;
-                       public SetupsController()
-                       {
-                           _dBHelpers = new DBHelpers(ConectionString.connectionString);
-                       }
-               Public async void getSingleList()
-               {
-                var Result = await _dBHelpers.QueryAsyncList&lt;YourViewModelClass&gt;("Select * from table");
-               }
-                 public void getSingleRecord()
-               {
-                var Result = _dBHelpers.Query&lt;YourViewModelClass&gt;("Select Top 1* from table");
-               }
+    <Description>To make full use of web APIs, exclude the installation of extra packages by just installing DapperDBHelper. 
+Create an object of DapperDBHelper and pass your connection string through the constructor of the DBHelper class. 
 
-               public void getMultipleTable()
-               {
-               Make list same as it is like table  returns from  your store procedure
-                 List&lt;string&gt; tableName = new List&lt;string&gt;();
-                               tableName.Add("Table1");
-                               tableName.Add("Table2");
-                               tableName.Add("Table3");
-                      
-                               var Result = await  _dBHelpers.QueryMultipleAsync("EXEC Store_Procedure @ID", param: new { ID = ID }, tableName);
-               }
-               Execute Method is used for CRUD Operations
-               After Execution of your store procedure returning single row of current execution is best practice
-               ExecuteAsync call depends upon your application nature
-               public void InserData(Employees model)
-               {
-                   var Result = await  _dBHelpers.Execute("EXEC Store_Procedure @FirstName,@LastName,@Address", param: new { FirstName = model.FirstName, LastName =model.LastName, Address = model.Address});
-               }
+Here's how you can use DapperDBHelper. Below is an example:
+
+public class SetupsController
+{
+    private readonly DBHelpers _dBHelpers;
+
+    public SetupsController()
+    {
+        _dBHelpers = new DBHelpers(ConectionString.connectionString);
+    }
+
+    public async Task&lt;List&lt;YourViewModelClass&gt;&gt; GetSingleListAsync()
+    {
+        var result = await _dBHelpers.QueryAsyncList&lt;YourViewModelClass&gt;("SELECT * FROM table");
+        return result;
+    }
+
+    public YourViewModelClass GetSingleRecord()
+    {
+        var result = _dBHelpers.Query&lt;YourViewModelClass&gt;("SELECT TOP 1 * FROM table");
+        return result;
+    }
+
+    public async Task&lt;Dictionary&lt;string, IEnumerable&lt;object&gt;&gt;&gt; GetMultipleTablesAsync(int id)
+    {
+        // Make a list of table names that your stored procedure returns
+        List&lt;string&gt; tableNames = new List&lt;string&gt;
+        {
+            "Table1",
+            "Table2",
+            "Table3"
+        };
+
+        var result = await _dBHelpers.QueryMultipleAsync("EXEC Store_Procedure @ID", new { ID = id }, tableNames);
+        return result;
+    }
+
+    // Execute Method is used for CRUD operations
+    // After execution of your stored procedure, returning a single row of current execution is a best practice
+    // ExecuteAsync call depends upon your application nature
+    public async Task&lt;int&gt; InsertDataAsync(Employees model)
+    {
+        var result = await _dBHelpers.ExecuteAsync("EXEC Store_Procedure @FirstName, @LastName, @Address", new { FirstName = model.FirstName, LastName = model.LastName, Address = model.Address });
+        return result;
+    }
+}
 
 
 
 
+For .NET 8, you can use the following code:
 
- -- For .NET 8  following Code do the help--
 
 // Register your service here
-    builder.Services.AddTransient&lt;DBHelpersForAllDatabases&gt;();
+builder.Services.AddTransient&lt;DBHelpersForAllDatabases&gt;();
 
-    // Register your database connection
-    Builder.Services.AddTransient&lt;IDbConnection&gt;( =&gt; new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));
+// Register your database connection
+builder.Services.AddTransient&lt;IDbConnection&gt;(_ =&gt; new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));
 
 public class MyController : ControllerBase
 {
@@ -67,11 +80,54 @@ public class MyController : ControllerBase
         var result = await _dbHelpers.QueryAsyncList&lt;MyModel&gt;("SELECT * FROM MyTable");
         return Ok(result);
     }
-}</Description>
+}
+
+
+In this setup:
+
+GetSingleListAsync: Asynchronously retrieves a list of records from a table.
+GetSingleRecord: Retrieves a single record from a table.
+GetMultipleTablesAsync: Executes a stored procedure that returns multiple tables and maps them to a dictionary.
+InsertDataAsync: Executes a stored procedure to insert data into a table.
+Make sure to adjust the method signatures and implementations to match your specific use case and requirements. This setup allows you to effectively manage database interactions using DapperDBHelper in a streamlined manner.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</Description>
     <Copyright>Create By Inam Abbas</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryType></RepositoryType>
-    <Version>1.6.0</Version>
+    <Version>1.7.0</Version>
     <AssemblyVersion>1.2.0.0</AssemblyVersion>
     <PackageTags>DapperDbHelper, DBHelper,Generic,DapperGenerics, Dapper DB Pacakage, Dapper API, API Helper Dapper</PackageTags>
     <FileVersion>1.2.0.0</FileVersion>
